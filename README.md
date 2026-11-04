@@ -86,3 +86,7 @@ This is an operating forecast, not a full GAAP three-statement model. Inventory 
 The project demonstrates analytical decision support, advanced Excel, financial modeling, reproducible data handling and communication of business tradeoffs.
 
 MIT licensed.
+
+## November 4 implementation and validation
+
+The Python `forecast(history, case)` API accepts at least 18 consecutive months, calibrates on the latest 18 and advances its 12-month horizon from the last actual. Missing, duplicate or reversed months fail. Adding July 2026 actuals produces August 2026–July 2027 forecasts. The Excel companion retains its original fixed dates. The suite now contains 24 tests.

@@ -61,7 +61,12 @@ def wape(actual, predicted):
 def forecast(history, case='Base'):
     """Seasonal prior-year units, trailing six-month YoY calibration; no future actuals."""
     if case not in CASES: raise ValueError('Unknown case')
-    if len(history) != 18: raise ValueError('Eighteen months required')
+    if len(history) < 18: raise ValueError('At least eighteen consecutive months required')
+    months = [tuple(map(int, x['month'].split('-'))) for x in history]
+    serials = [year * 12 + month - 1 for year, month in months]
+    if any(b != a + 1 for a, b in zip(serials, serials[1:])):
+        raise ValueError('History must have unique consecutive months in ascending order')
+    history = history[-18:]
     growth, price_change, cost_change, dio, dpo = CASES[case]
     ratio = sum(x['units'] for x in history[12:18])/sum(x['units'] for x in history[:6])
     last = history[-1]; price = last['revenue']/last['units']; vc = last['variable_cost']/last['units']
@@ -70,7 +75,7 @@ def forecast(history, case='Base'):
     prev_ar = last['revenue']*2/30; prev_ap = last['merchandise_cost']*30/30
     rows = []
     for i in range(12):
-        month_no = 6+i; year = 2026+month_no//12; month=month_no%12+1
+        month_no = serials[-1] + i + 1; year = month_no//12; month=month_no%12+1
         days = calendar.monthrange(year,month)[1]
         units = history[6+i]['units']*ratio*(1+growth)
         revenue = units*price*(1+price_change); cost=units*vc*(1+cost_change)
