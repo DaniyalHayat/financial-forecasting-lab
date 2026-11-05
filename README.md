@@ -1,6 +1,6 @@
 # Retail Finance Lab
 
-A reproducible retail finance case connecting operating drivers to earnings and cash. Built as an independent portfolio project.
+An independent retail FP&A case using 3,240 synthetic orders. The model explains an EBITDA budget miss and tests how sales, costs, and supplier terms affect cash over the next 12 months.
 
 ![Retail finance dashboard](docs/dashboard.png)
 
@@ -42,11 +42,13 @@ Open `http://localhost:8000/outputs/dashboard.html`. The dashboard is self-conta
 | Source records | 3,240 deterministic synthetic order records, seed 42 |
 | SQL layer | Unique order keys, positive quantity constraints, segment and monthly aggregation views |
 | Profit bridge | Exact sequential volume/mix/net-price/variable-cost/fixed-cost decomposition |
-| Forecast | Jul 2026-Jun 2027; prior-year monthly units calibrated by trailing six-month YoY growth |
+| Default forecast | Jul 2026-Jun 2027, with prior-year monthly units calibrated by trailing six-month YoY growth |
 | Cases | Base, Downside, Upside; demand, price, cost, inventory days and payable days |
 | Cash | EBITDA less cash tax, change in merchandise working capital and capex; no financing plug |
 | Backtest | Jan-Jun 2026 holdout using only data through Dec 2025 |
 | Excel | Live formulas, scenario selector, SUMPRODUCT, native PivotTable, charts and reconciliations |
+
+The Python `forecast(history, case)` API uses the latest 18 consecutive months and starts the forecast in the month after the final actual. It rejects missing, duplicate, or out-of-order months. Adding July 2026 actuals moves the forecast to August 2026 through July 2027. The Excel companion uses the original fixed dates.
 
 ### Exact bridge
 
@@ -71,7 +73,7 @@ This is an operating forecast, not a full GAAP three-statement model. Inventory 
 
 ## Validation
 
-- 22 automated Python tests: bridge math, mix attribution, cash continuity, cash tax, SQL source tie-out, duplicate rejection, scenario behavior, WAPE edge cases and no mutation of historical actuals.
+- 24 automated Python tests cover the EBITDA bridge, cash flow, SQL tie-outs, scenario behavior, forecast windows, and invalid inputs.
 - Native Excel recalculation agrees with Python for revenue, EBITDA, free cash flow and ending cash across **all three cases** to within $0.01.
 - Native Excel formula error scan completed; workbook has a real PivotTable cache and pivot definition.
 - [Excel verification receipt](outputs/excel_verification.json).
@@ -81,12 +83,4 @@ This is an operating forecast, not a full GAAP three-statement model. Inventory 
 
 `finance.py` contains the generator and finance engine. `sql/model.sql` defines the aggregation layer. `data/` contains raw synthetic CSVs. `outputs/` contains reproducible analysis, forecasts, dashboard and memo. `workbooks/` contains the Excel model. `tests/` contains model tests. `build_dashboard.py` and `dashboard_template.html` rebuild the UI.
 
-## Why this case
-
-The project demonstrates analytical decision support, advanced Excel, financial modeling, reproducible data handling and communication of business tradeoffs.
-
 MIT licensed.
-
-## November 4 implementation and validation
-
-The Python `forecast(history, case)` API accepts at least 18 consecutive months, calibrates on the latest 18 and advances its 12-month horizon from the last actual. Missing, duplicate or reversed months fail. Adding July 2026 actuals produces August 2026–July 2027 forecasts. The Excel companion retains its original fixed dates. The suite now contains 24 tests.
