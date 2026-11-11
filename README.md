@@ -10,13 +10,13 @@ The retailer's EBITDA is approximately **$320,000 below budget** across the 18 a
 
 The Base scenario produces $13.84 million in modeled revenue, $2.22 million in EBITDA, and $2.30 million in ending cash. These are **simulation outputs**, not achieved revenue, savings, or an investment recommendation.
 
-## Review in five minutes
+## Explore the model
 
 1. Open [the Excel model](workbooks/model.xlsx). Summary shows the decision metrics; Assumptions D5 selects Base, Downside, or Upside.
 2. Inspect `Variance bridge`: every dollar of EBITDA change is attributed to five mutually reconciling drivers.
 3. Inspect `Forecast`: units, prices, merchandise cost, fulfillment expense, taxes, working capital, capex, and cash are linked through formulas.
 4. Open `Pivot review`: a **native Excel PivotTable** summarizes category, region, revenue, and EBITDA.
-5. Read [the management memo](outputs/management_memo.md) and [interview walkthrough](docs/WALKTHROUGH.md).
+5. Read the [management memo](outputs/management_memo.md) for proposed actions and assumptions to verify.
 
 GitHub previews HTML as source. Download the repository and open `outputs/dashboard.html` locally, or serve it using the instructions below.
 
@@ -65,7 +65,7 @@ The five effects sum to actual EBITDA less budget EBITDA. The floating-point rec
 
 ### Forecast evaluation
 
-Seasonal holdout WAPE is 2.8%; the trailing three-month mean benchmark is 25.3%. Synthetic data intentionally contains seasonality, so the comparison is favorable to the seasonal method. It is **not evidence of real-world model superiority**. All six held-out months are excluded from baseline calibration. The production case forecast, as of June 2026, can use actuals available through that date.
+Seasonal holdout WAPE is 2.8%, compared with 25.3% for the trailing three-month mean. The synthetic generator builds in seasonality, which favors the seasonal method. The holdout uses only data through December 2025 for calibration. The forward forecast uses case data through June 2026.
 
 ### Boundaries
 
@@ -77,7 +77,7 @@ This is an operating forecast, not a full GAAP three-statement model. Inventory 
 - Native Excel recalculation agrees with Python for revenue, EBITDA, free cash flow and ending cash across **all three cases** to within $0.01.
 - Native Excel formula error scan completed; workbook has a real PivotTable cache and pivot definition.
 - [Excel verification receipt](outputs/excel_verification.json).
-- GitHub Actions runs the Python pipeline and tests on Python 3.11, 3.12 and 3.13. Workflow results should be checked on the Actions tab; local validation is separate.
+- GitHub Actions runs the Python pipeline and tests on Python 3.11, 3.12, and 3.13.
 
 ## Files
 
